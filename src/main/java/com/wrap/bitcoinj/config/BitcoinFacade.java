@@ -3,7 +3,6 @@ package com.wrap.bitcoinj.config;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.wrap.bitcoinj.WrapWallet;
 import com.wrap.bitcoinj.listeners.BlockListener;
@@ -125,7 +124,6 @@ public class BitcoinFacade implements IBitcoinFacade {
         );
         this.wallet.peerGroup();
         this.wallet.peerGroup().addBlocksDownloadedEventListener(bl);
-
     }
 
     @Override

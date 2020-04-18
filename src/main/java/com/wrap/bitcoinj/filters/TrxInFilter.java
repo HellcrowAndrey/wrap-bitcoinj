@@ -51,28 +51,14 @@ public class TrxInFilter extends Middleware {
                 i.setHash(input.getOutpoint().getHash().toString());
                 this.state.getInputs().add(i);
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
             log.warn("Can't parse inputs.");
         } finally {
-            if (Objects.nonNull(input)) {
-                try {
-                    Sha256Hash hash = input.getOutpoint().getHash();
-                    long index = input.getOutpoint().getIndex();
-                    ListenableFuture<Transaction> f = peer.getPeerMempoolTransaction(hash);
-                    Transaction result = f.get(1, TimeUnit.SECONDS);
-                    result.getOutputs().stream()
-                            .filter(o -> o.getIndex() == index)
-                            .findFirst()
-                            .ifPresent(output -> {
-                                String address = new Script(output.getScriptBytes())
-                                        .getToAddress(this.netParams).toString();
-                                log.info("Address, {}", address);
-                                TInput i = new TInput(address, index, hash.toString());
-                                this.state.getInputs().add(i);
-                            });
-                } catch (Exception ignore) {
-                    log.warn(ignore.getMessage());
-                }
+            if (input != null) {
+                Sha256Hash hash = input.getOutpoint().getHash();
+                long index = input.getOutpoint().getIndex();
+                TInput i = new TInput("", index, hash.toString());
+                this.state.getInputs().add(i);
             }
         }
     }
